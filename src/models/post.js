@@ -22,9 +22,14 @@ const postSchema = new mongoose.Schema({
   puestos: {
     type: Number,
     required: true,
-  }
-
+  },
+  rol: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'rol',
+  },
 });
+
+
 
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;

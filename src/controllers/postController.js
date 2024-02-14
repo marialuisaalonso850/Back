@@ -1,50 +1,62 @@
 const Post = require('../models/post.js');
-const ParqueaderoExistente = require('../models/parqueaderoExistente.js');
-const gmail = require('../models/gmailuser.js')
+const User = require('../models/user.js');
 
 async function createPost(req, res) {
   try {
-    // Verificar si ya existe un parqueadero con los mismos datos
-    const parqueaderoExistente = await ParqueaderoExistente.findOne({
-      name: req.body.name,
+    // Crea el post
+    const post = new Post({
+      title: req.body.title,
+      content: req.body.content,
       longitud: req.body.longitud,
       latitud: req.body.latitud,
+      puestos: req.body.puestos,
     });
+    await post.save();
 
-    const gmail = await user.findOne({
-      gmail: req.body.gmail
-    });
-
-    if (parqueaderoExistente) {
-      // Si existe un parqueadero con los mismos datos, crear el post
-      const post = new Post({
-        title: req.body.title,
-        content: req.body.content,
-        longitud: req.body.longitud,
-        latitud: req.body.latitud,
-        puestos: req.body.puestos,
-      });
-      await post.save();
-
-      res.send(post);
-      res.send(gmail);
-    } else {
-      // Si no se encuentra un parqueadero existente, registrar un mensaje de log
-      console.log('No se encontró un parqueadero existente para los datos proporcionados.');
-
-      // Responder con un error indicando que no se puede crear el post
-      res.status(400).send("No se puede crear el post. Los datos del parqueadero no coinciden.");
-    }
-  
+    res.send(post);
   } catch (error) {
     res.status(500).send(error);
   }
 }
+async function insetUserRol(req, res){
+  try {
+    const user = new User({
+      rol: req.body.rol
+    });
+     
+     user.findOne(user._id,{rol:1})
+  } catch (error) {
+    console.error({message:'error 400'})
+  }
+
+}
+async function createParqueadero(req, res) {
+  try {
+    // Busca al usuario que está realizando la acción (asumiendo que está disponible en req.user)
+    const user = req.body.rol;
+
+    // Si se encuentra al usuario, actualiza su rol a '2' (cliente)
+    if (user) {
+      // Suponiendo que User es el modelo de mongoose
+      await User.findByIdAndUpdate(User._id, {rol: 2} );
+      console.log("actulizacion rol "+User.username);
+    } else {
+      insetUserRol()
+      return res.status(400).send({ message: 'no actualizado' });
+    }
+
+    res.status(200).send({ message: 'Rol del usuario actualizado a cliente.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error al actualizar el rol del usuario.' });
+  }
+}
+
 
 async function getAllPosts(req, res) {
   try {
     const posts = await Post.find();
-    res.send(posts);  
+    res.send(posts);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -55,7 +67,7 @@ async function updatePost(req, res) {
     const post = await Post.findByIdAndUpdate(
       req.params.id,
       {
-        title: req.body.title, 
+        title: req.body.title,
         content: req.body.content,
         longitud: req.body.longitud,
         latitud: req.body.latitud,
@@ -92,6 +104,7 @@ async function deletePost(req, res) {
 
 module.exports = {
   createPost,
+  createParqueadero,
   getAllPosts,
   updatePost,
   getPostById,

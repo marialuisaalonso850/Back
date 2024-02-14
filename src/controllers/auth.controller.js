@@ -13,7 +13,7 @@ const signupHandler = async (req, res, next) => {
       password,
     });
 
-    // Verify roles
+    // Verificar roles
     if (rol) {
       const foundRoles = await Role.find({ name: { $in: rol } });
       newUser.rol = foundRoles.map((role) => role._id);
@@ -22,21 +22,21 @@ const signupHandler = async (req, res, next) => {
       newUser.rol = [defaultRole._id];
     }
 
-    // Save the User object in MongoDB
+    // Guardar el objeto de usuario en MongoDB
     const savedUser = await newUser.save();
 
-    // Create a token
+    // Crear un token
     const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
       expiresIn: TOKEN_EXPIRATION,
     });
 
     return res.status(200).json({ token });
   } catch (error) {
-    // Handle specific error cases
+    // Manejar casos de error específicos
     if (error.name === 'ValidationError') {
       return res.status(400).json({ message: error.message });
     } else if (error.code === 11000) { 
-      return res.status(400).json({ message: 'Email or username already exists' });
+      return res.status(400).json({ message: 'El correo electrónico o el nombre de usuario ya existe' });
     } else {
       next(error);
     }
@@ -48,7 +48,7 @@ const signinHandler = async (req, res, next) => {
     const userFound = await User.findOne({ gmail: req.body.gmail }).populate("rol");
 
     if (!userFound) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ message: "Usuario no encontrado" });
     }
 
     const matchPassword = await User.comparePassword(req.body.password, userFound.password);
@@ -56,7 +56,7 @@ const signinHandler = async (req, res, next) => {
     if (!matchPassword) {
       return res.status(401).json({
         token: null,
-        message: "Invalid password",
+        message: "Contraseña inválida",
       });
     }
 

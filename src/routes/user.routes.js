@@ -5,6 +5,6 @@ const { checkExistingUser } = require("../middlewares/verifySignup");
 
 const router = Router();
 
-router.post("/", [verifyToken, isAdmin, checkExistingUser], createUser);
+router.post("/", [verifyToken, checkExistingUser], createUser);
 
 export default router;

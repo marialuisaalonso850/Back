@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
   gmail: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   username: { type: String, required: true },
-  rol: { type: [String], default: ["user"] }
+  rol: { type: Number}
 });
 
 const productSchema = new mongoose.Schema(
@@ -29,13 +29,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    rol: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Role",
-      },
-    ],
+    rol: {
+      type: Number,
+      required: true,
+    },
+    
   },
+  
   {
     timestamps: true,
     versionKey: false,

@@ -5,7 +5,7 @@ const createUser = async (req, res) => {
   try {
     const { username, gmail, password, rol } = req.body;
 
-    const rolesFound = await Role.find({ name: { $in: roles } });
+    const rolesFound = await Role.find({ name: { $in: rol } });
 
     // creating a new User
     const user = new User({
@@ -20,6 +20,7 @@ const createUser = async (req, res) => {
 
     // saving the new user
     const savedUser = await user.save();
+    
 
     return res.status(200).json({
       _id: savedUser._id,

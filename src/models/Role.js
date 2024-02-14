@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 
-const ROLES = ["user", "admin", "cliente"];
-
-const roleSchema = new mongoose.Schema(
-  {
-    name: String,
+const roleSchema = new mongoose.Schema({
+  name: {
+    type: Number,
+    required: true,
+    unique: true,
   },
-  {
-    versionKey: false,
-  }
-);
+  description: String,
+  permissions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Permission',
+  }],
+});
 
-module.exports = mongoose.model("Role", roleSchema);
+const Role = mongoose.model("rol", roleSchema);
+
+module.exports = Role;

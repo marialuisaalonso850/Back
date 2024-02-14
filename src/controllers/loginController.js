@@ -16,9 +16,13 @@ exports.authenticateUser = async (req, res) => {
             const correctPassword = await user.comparePassword(password, user.password);
 
             if (correctPassword) {
-                if (user.rol.includes('admin')) {
-                    // Es un administrador
-                    // Realizar acciones específicas para administradores si es necesario
+                // Verifica si el rol es 1 (usuario) o 2 (cliente)
+                if (user.rol === 1) {
+                    // Es un usuario
+                    // Realizar acciones específicas para usuarios si es necesario
+                } else if (user.rol === 2) {
+                    // Es un cliente
+                    // Realizar acciones específicas para clientes si es necesario
                 }
 
                 const accessToken = user.createAccessToken();
@@ -36,3 +40,4 @@ exports.authenticateUser = async (req, res) => {
         res.status(500).json(jsonResponse(500, { error: 'Error interno del servidor.' }));
     }
 };
+

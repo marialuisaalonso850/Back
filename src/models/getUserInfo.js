@@ -2,7 +2,8 @@ function getUserInfo(user){
     return{
         gmail: user.gmail,
         username: user.username,
-        id: user.id || user._id
+        id: user.id || user._id,
+       
     };
 };
 
